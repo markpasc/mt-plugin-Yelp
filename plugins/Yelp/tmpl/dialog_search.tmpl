@@ -1,0 +1,45 @@
+<mt:setvar name="screen_type" value="dialog-screen yelp-search-dialog">
+<mt:setvarblock name="page_title">Find Yelp Place</mt:setvarblock>
+
+<mt:include name="dialog/header.tmpl">
+
+<form method="post" action="<mt:var name="script_url">" name="yelp_search">
+
+<input type="hidden" name="__mode"  value="yelp_result" />
+<input type="hidden" name="blog_id" value="<mt:var name="blog_id">" />
+
+<mtapp:setting
+    id="term"
+    label="Search"
+    show_hint="0">
+    <input name="term" style="width: 240px" value="<mt:var name="term" escape="html">" />
+</mtapp:setting>
+
+<mtapp:setting
+    id="place"
+    label="Near"
+    show_hint="0">
+    <input name="location" style="width: 240px" value="<mt:var name="location" escape="html">" />
+</mtapp:setting>
+
+<div class="actions-bar">
+    <div class="actions-bar-inner pkg actions">
+        <button
+            type="submit"
+            accesskey="s"
+            title="Search (s)"
+            class="primary-button"
+            ><__trans phrase="Search"></button>
+        <button
+            onclick="closeDialog(); return false"
+            type="submit"
+            accesskey="x"
+            title="<__trans phrase="Cancel (x)">"
+            ><__trans phrase="Cancel"></button>
+    </div>
+</div>
+
+</form>
+
+<mt:include name="dialog/footer.tmpl">
+
