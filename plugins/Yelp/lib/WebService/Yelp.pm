@@ -107,7 +107,7 @@ sub new {
   my $self = shift->SUPER::new(@_);
 
   unless($self->ywsid()) {
-    warn "ywsid is a required init parameter";
+    die "ywsid is a required init parameter";
     return undef;
   }
 
@@ -430,14 +430,15 @@ sub call {
   return undef unless _validate($func, $params);
 
   $params->{ywsid} = $self->ywsid();
+  die "OMG NO YWSID?!\n" if !$params->{ywsid};
   $self->{_uri}->path($cmap{$func}->{path});
-  $self->{_uri}->query_form($params);
+  $self->{_uri}->query_form(%$params);
 
-  my $req = HTTP::Request->new(GET => $self->{_uri});
+  my $req = HTTP::Request->new(GET => $self->{_uri}->as_string);
   my $res = $self->{_ua}->request($req);
 
   unless($res->is_success()) {
-    warn $res->status_line();
+    die $res->status_line();
     return undef;
   }
 
@@ -509,14 +510,14 @@ sub _validate {
 
   # verify that we know about this function.
   unless($cmap{$func}) {
-    warn "Unrecognized function '$func'";
+    die "Unrecognized function '$func'";
     return 0;
   }
 
   # verify that we have the required params
   for my $req (keys %{$cmap{$func}->{req}}) {
     unless($params->{$req}) {
-      warn "$func requires the '$req' parameter";
+      die "$func requires the '$req' parameter";
       return 0;
     }
     return 0 unless _check_type($cmap{$func}->{req}->{$req},
